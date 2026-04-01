@@ -253,6 +253,74 @@ html,body{width:100%;height:100%;overflow:hidden;background:#060a14;font-family:
 .trap-flash{position:fixed;inset:0;background:rgba(239,68,68,0.3);pointer-events:none;z-index:44;animation:trapFlash 0.4s ease-out forwards;}
 @keyframes trapFlash{from{opacity:1}to{opacity:0;}}
 
+/* ═══════════════════════ TORCH BUTTON ═══════════════════════ */
+#torch-btn{
+  position:fixed;top:60px;right:14px;z-index:48;
+  width:50px;height:50px;border-radius:14px;
+  background:rgba(251,191,36,0.15);border:2px solid rgba(251,191,36,0.5);
+  color:#fbbf24;font-size:1.5rem;cursor:pointer;display:none;
+  flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  box-shadow:0 0 16px rgba(251,191,36,0.3);transition:all 0.2s;
+}
+#torch-btn.visible{display:flex;}
+#torch-btn:active{transform:scale(0.92);}
+#torch-count{font-family:'Fredoka One',cursive;font-size:0.58rem;color:#fbbf24;line-height:1;}
+
+/* ═══════════════════════ RADAR OVERLAY ═══════════════════════ */
+/* Indicador no canvas — seta animada apontando para o monstro */
+#radar-hud{
+  position:fixed;top:58px;right:72px;z-index:48;
+  width:44px;height:44px;border-radius:50%;
+  background:rgba(239,68,68,0.12);border:2px solid rgba(239,68,68,0.45);
+  display:none;align-items:center;justify-content:center;
+  box-shadow:0 0 12px rgba(239,68,68,0.3);
+  transition:all 0.2s;
+}
+#radar-hud.visible{display:flex;}
+#radar-arrow{font-size:1.4rem;transition:transform 0.3s ease;display:block;line-height:1;}
+#radar-dist{
+  position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);
+  font-family:'Fredoka One',cursive;font-size:0.58rem;color:#f87171;
+  white-space:nowrap;
+}
+
+/* Pulso vermelho quando monstro muito perto */
+@keyframes radarPulse{0%,100%{box-shadow:0 0 12px rgba(239,68,68,0.3);}50%{box-shadow:0 0 22px rgba(239,68,68,0.8);}}
+#radar-hud.danger{animation:radarPulse 0.5s ease infinite;border-color:rgba(239,68,68,0.9);}
+
+/* ═══════════════════════ PWA INSTALL BANNER ═══════════════════════ */
+#install-banner{
+  position:fixed;bottom:0;left:0;right:0;z-index:110;
+  background:linear-gradient(135deg,#0f0820,#1a0f38);
+  border-top:2px solid rgba(168,85,247,0.4);
+  padding:14px 18px;display:none;align-items:center;gap:12px;
+  backdrop-filter:blur(12px);
+  animation:slideUp 0.4s ease;
+}
+#install-banner.show{display:flex;}
+#install-icon{font-size:2rem;flex-shrink:0;}
+#install-text{flex:1;}
+#install-text strong{font-family:'Fredoka One',cursive;font-size:0.95rem;color:#f0e6ff;display:block;}
+#install-text span{font-size:0.75rem;color:rgba(255,255,255,0.45);}
+#install-yes{font-family:'Fredoka One',cursive;font-size:0.85rem;padding:9px 18px;border-radius:12px;border:none;background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+#install-no{background:none;border:none;color:rgba(255,255,255,0.3);font-size:1.2rem;cursor:pointer;padding:4px;flex-shrink:0;}
+
+/* ═══════════════════════ SAVE INDICATOR ═══════════════════════ */
+#save-indicator{
+  position:fixed;top:54px;right:10px;z-index:49;
+  font-family:'Fredoka One',cursive;font-size:0.65rem;color:rgba(34,197,94,0.7);
+  display:flex;align-items:center;gap:3px;opacity:0;transition:opacity 0.5s;
+  pointer-events:none;
+}
+#save-indicator.show{opacity:1;}
+#save-indicator::before{content:'●';animation:saveBlink 1s ease infinite;}
+@keyframes saveBlink{0%,100%{opacity:1}50%{opacity:0.3}}
+
+/* ═══════════════════════ IN-LEVEL POWER ITEM GLOW ═══════════════════════ */
+/* Radar e Lanterna coletáveis no labirinto têm cores distintas */
+.pw-radar-glow { filter: drop-shadow(0 0 8px #ef4444); }
+.pw-torch-glow { filter: drop-shadow(0 0 8px #fbbf24); }
+
 /* ═══════════════════════ CONTROLS ═══════════════════════ */
 #ctrl-zone{position:fixed;bottom:24px;left:24px;z-index:20;}
 #joystick-wrap{position:relative;width:144px;height:144px;touch-action:none;cursor:pointer;}

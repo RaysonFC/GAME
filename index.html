@@ -3,7 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#a855f7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Labirinto">
+<meta name="mobile-web-app-capable" content="yes">
 <title>Labirinto Mágico</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" href="icons/icon-96.png" type="image/png">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="estilos.css">
 </head>
@@ -44,8 +52,17 @@
   <div class="pu-slot empty" id="pu-slot-2">&#9723;</div>
 </div>
 
-<!-- TORCH BUTTON -->
-<button id="torch-btn">&#128294;<div id="torch-count">0</div></button>
+<!-- TORCH BUTTON (fog phases) -->
+<button id="torch-btn" title="Usar Lanterna">&#128294;<div id="torch-count">0</div></button>
+
+<!-- RADAR HUD (shows monster direction) -->
+<div id="radar-hud" title="Radar do Monstro">
+  <span id="radar-arrow">&#8593;</span>
+  <div id="radar-dist"></div>
+</div>
+
+<!-- SAVE INDICATOR -->
+<div id="save-indicator">Salvo</div>
 
 <!-- POWER-UP PICK OVERLAY -->
 <div id="powerup-pick-overlay">
@@ -114,10 +131,10 @@
   <div id="tutorial-box">
     <div class="tut-step active" data-step="0"><div class="tut-icon">&#127752;</div><div class="tut-title">Bem-vindo!</div><div class="tut-desc">Voc&#234; controla a fada &#129274; e precisa escapar pelo labirinto antes que o fantasminha te pegue!</div></div>
     <div class="tut-step" data-step="1"><div class="tut-icon">&#128273;</div><div class="tut-title">Colete as Chaves</div><div class="tut-desc">Colete todas as chaves &#128273; e moedas &#128184;. As moedas valem pontos b&#244;nus!</div></div>
-    <div class="tut-step" data-step="2"><div class="tut-icon">&#127881;</div><div class="tut-title">Power-ups</div><div class="tut-desc">Ao passar de fase voc&#234; escolhe um poder! Poderes tamb&#233;m aparecem no labirinto.</div></div>
-    <div class="tut-step" data-step="3"><div class="tut-icon">&#128123;</div><div class="tut-title">Fuja do Fantasminha</div><div class="tut-desc">Voc&#234; tem 3 vidas &#10084;. O minimapa mostra onde ele est&#225;! A barra vermelha indica perigo.</div></div>
+    <div class="tut-step" data-step="2"><div class="tut-icon">&#127881;</div><div class="tut-title">Power-ups no Labirinto</div><div class="tut-desc">Colete power-ups espalhados no labirinto. Na fase de N&#233;voa aparecem &#128294; Lanterna e &#128225; Radar!</div></div>
+    <div class="tut-step" data-step="3"><div class="tut-icon">&#128123;</div><div class="tut-title">Fuja do Fantasminha</div><div class="tut-desc">Voc&#234; tem 3 vidas &#10084;. O minimapa mostra onde ele est&#225;! O Radar avisa a dire&#231;&#227;o dele!</div></div>
     <div class="tut-step" data-step="4"><div class="tut-icon">&#10024;</div><div class="tut-title">Passagens Secretas</div><div class="tut-desc">Paredes com setas brilhantes s&#227;o passagens secretas! Teleportam e d&#227;o b&#244;nus.</div></div>
-    <div class="tut-step" data-step="5"><div class="tut-icon">&#11088;</div><div class="tut-title">Estrelas &amp; Conquistas</div><div class="tut-desc">Complete r&#225;pido para 3 estrelas. Desbloqueie conquistas e dispute o ranking!</div></div>
+    <div class="tut-step" data-step="5"><div class="tut-icon">&#11088;</div><div class="tut-title">Salve seu Progresso</div><div class="tut-desc">Seu progresso &#233; salvo automaticamente! Voc&#234; pode instalar o jogo no celular para jogar offline.</div></div>
     <div class="tut-nav">
       <button class="tut-btn tut-btn-skip" id="tut-skip">Pular</button>
       <div class="tut-dots" id="tut-dots"></div>
@@ -150,10 +167,22 @@
   </div>
 </div>
 
+<!-- MISC UI -->
 <div id="secret-flash">&#10024; Passagem Secreta! &#10024;</div>
 <div id="toast"></div>
 <div id="ach-popup"></div>
 <div id="gtost"></div>
+
+<!-- PWA INSTALL BANNER -->
+<div id="install-banner">
+  <div id="install-icon">&#127914;</div>
+  <div id="install-text">
+    <strong>Instalar Labirinto M&#225;gico</strong>
+    <span>Jogue offline, na tela cheia!</span>
+  </div>
+  <button id="install-yes">&#128229; Instalar</button>
+  <button id="install-no">&#10005;</button>
+</div>
 
 <script src="script.js"></script>
 </body>
