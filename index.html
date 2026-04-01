@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Labirinto Mágico</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+<canvas id="c"></canvas>
+<canvas id="minimap" width="92" height="78"></canvas>
+<div id="speed-bar"><div id="speed-fill"></div></div>
+
+<!-- HUD BAR -->
+<div id="hud-bar">
+  <button id="menu-btn">&#9776;</button>
+  <div id="hud-stamina">&#9889;<div id="stamina-bg"><div id="stamina-fill"></div></div></div>
+  <div id="hud-stats">
+    <div class="hbadge">Nv<span id="lvl-val">1</span><span id="stag"></span></div>
+    <div class="hstat">&#11088;<span id="score-val">0</span></div>
+    <div class="hstat">&#128273;<span id="key-val">0</span>/<span id="key-total">1</span></div>
+    <div class="hstat">&#10084;<span id="lives-val">3</span></div>
+    <div class="hstat">&#128184;<span id="coins-val">0</span></div>
+    <div class="hstat">&#128123;<div id="danger-bar-wrap"><div id="danger-bar"></div></div></div>
+    <div id="stars-hud">&#11088;&#11088;&#11088;</div>
+  </div>
+</div>
+
+<!-- DROP-DOWN MENU -->
+<div id="top-menu">
+  <div class="mrow">
+    <button class="mbtn" id="pause-btn">&#9646;&#9646; Pausa</button>
+    <button class="mbtn" id="ach-btn">&#127942; Conquistas</button>
+    <button class="mbtn" id="ranking-btn">&#127941; Ranking</button>
+    <button class="mbtn" id="config-btn">&#9881;&#65039; Config</button>
+  </div>
+</div>
+
+<!-- POWER-UP TRAY -->
+<div id="powerup-tray">
+  <div class="pu-slot empty" id="pu-slot-0">&#9723;</div>
+  <div class="pu-slot empty" id="pu-slot-1">&#9723;</div>
+  <div class="pu-slot empty" id="pu-slot-2">&#9723;</div>
+</div>
+
+<!-- TORCH BUTTON -->
+<button id="torch-btn">&#128294;<div id="torch-count">0</div></button>
+
+<!-- POWER-UP PICK OVERLAY -->
+<div id="powerup-pick-overlay">
+  <div id="pp-title">&#10024; Escolha seu Poder!</div>
+  <div id="pp-subtitle">Complete mais fases para ganhar poderes mais fortes</div>
+  <div id="pp-cards"></div>
+  <button id="pp-skip">Pular por agora</button>
+</div>
+
+<!-- DIALOG -->
+<div id="dialog-box">
+  <div id="dialog-speaker">&#129674; Fadinha</div>
+  <div id="dialog-text">Vamos l&#225;!</div>
+  <button id="dialog-close-btn">Ok! &#128522;</button>
+</div>
+
+<!-- CONTROLS -->
+<div id="ctrl-zone" class="joystick-mode">
+  <div id="joystick-wrap"><div id="joystick-base"></div><div id="joystick-knob"></div></div>
+  <div id="dpad">
+    <div class="dkey" id="dpad-up">&#9650;</div>
+    <div class="dkey" id="dpad-left">&#9664;</div>
+    <div class="dkey" id="dpad-right">&#9654;</div>
+    <div class="dkey" id="dpad-down">&#9660;</div>
+  </div>
+</div>
+
+<!-- OVERLAYS -->
+<div class="full-overlay show" id="game-overlay">
+  <div class="ov-title" id="ov-title" style="color:#f7c948">&#127752; Labirinto<br>M&#225;gico!</div>
+  <div class="ov-sub" id="ov-sub">Pegue as chaves &#128273; e corra para a porta &#128682;&#10;O fantasminha vai te pegar! &#128123;</div>
+  <button class="ov-btn" id="ov-btn">&#9654; Jogar!</button>
+</div>
+<div class="full-overlay" id="config-overlay">
+  <div id="config-box">
+    <div id="config-header"><h2>&#9881;&#65039; Configura&#231;&#245;es</h2><button id="config-close">&#10005;</button></div>
+    <div id="config-body">
+      <div class="cfg-section"><h3>&#127918; Tipo de Controle</h3>
+        <div class="ctrl-options">
+          <div class="ctrl-opt selected" id="opt-joystick"><div class="ctrl-opt-icon">&#128377;&#65039;</div><div class="ctrl-opt-name">Joystick</div><div class="ctrl-opt-desc">Arraste o c&#237;rculo</div></div>
+          <div class="ctrl-opt" id="opt-dpad"><div class="ctrl-opt-icon">&#11014;&#65039;</div><div class="ctrl-opt-name">Setas</div><div class="ctrl-opt-desc">4 bot&#245;es direcionais</div></div>
+        </div>
+      </div>
+      <button class="cfg-save" id="config-save">&#9989; Salvar e Fechar</button>
+    </div>
+  </div>
+</div>
+<div class="full-overlay" id="pause-overlay">
+  <div id="pause-box"><h2>&#9646;&#9646; Pausado</h2>
+    <div class="pause-btn-row">
+      <button class="p-btn p-btn-resume" id="btn-resume">&#9654; Continuar</button>
+      <button class="p-btn p-btn-ranking" id="btn-pause-ranking">&#127941; Ver Ranking</button>
+      <button class="p-btn p-btn-replay" id="btn-pause-replay">&#127910; Replay</button>
+      <button class="p-btn p-btn-quit" id="btn-quit">&#127968; Voltar ao Menu</button>
+    </div>
+  </div>
+</div>
+<div class="full-overlay" id="ranking-overlay">
+  <div id="ranking-box">
+    <div id="ranking-header"><h2>&#127941; Ranking</h2><button id="ranking-close">&#10005;</button></div>
+    <div id="ranking-body"></div>
+    <div id="ranking-footer"><div id="ranking-name-row"><input id="ranking-name-input" type="text" maxlength="16" placeholder="Seu nome para salvar pontuação..."/><button id="ranking-save-btn">&#128190; Salvar</button></div></div>
+  </div>
+</div>
+<div class="full-overlay" id="tutorial-overlay">
+  <div id="tutorial-box">
+    <div class="tut-step active" data-step="0"><div class="tut-icon">&#127752;</div><div class="tut-title">Bem-vindo!</div><div class="tut-desc">Voc&#234; controla a fada &#129274; e precisa escapar pelo labirinto antes que o fantasminha te pegue!</div></div>
+    <div class="tut-step" data-step="1"><div class="tut-icon">&#128273;</div><div class="tut-title">Colete as Chaves</div><div class="tut-desc">Colete todas as chaves &#128273; e moedas &#128184;. As moedas valem pontos b&#244;nus!</div></div>
+    <div class="tut-step" data-step="2"><div class="tut-icon">&#127881;</div><div class="tut-title">Power-ups</div><div class="tut-desc">Ao passar de fase voc&#234; escolhe um poder! Poderes tamb&#233;m aparecem no labirinto.</div></div>
+    <div class="tut-step" data-step="3"><div class="tut-icon">&#128123;</div><div class="tut-title">Fuja do Fantasminha</div><div class="tut-desc">Voc&#234; tem 3 vidas &#10084;. O minimapa mostra onde ele est&#225;! A barra vermelha indica perigo.</div></div>
+    <div class="tut-step" data-step="4"><div class="tut-icon">&#10024;</div><div class="tut-title">Passagens Secretas</div><div class="tut-desc">Paredes com setas brilhantes s&#227;o passagens secretas! Teleportam e d&#227;o b&#244;nus.</div></div>
+    <div class="tut-step" data-step="5"><div class="tut-icon">&#11088;</div><div class="tut-title">Estrelas &amp; Conquistas</div><div class="tut-desc">Complete r&#225;pido para 3 estrelas. Desbloqueie conquistas e dispute o ranking!</div></div>
+    <div class="tut-nav">
+      <button class="tut-btn tut-btn-skip" id="tut-skip">Pular</button>
+      <div class="tut-dots" id="tut-dots"></div>
+      <button class="tut-btn tut-btn-next" id="tut-next">Pr&#243;ximo &#8594;</button>
+    </div>
+  </div>
+</div>
+<div class="full-overlay" id="achievements-overlay">
+  <div id="ach-box">
+    <div id="ach-header"><h2>&#127942; Conquistas</h2><button id="ach-close">&#10005;</button></div>
+    <div id="ach-progress"><div id="ach-prog-label">0 / 0 desbloqueadas</div><div id="ach-prog-bar-wrap"><div id="ach-prog-bar" style="width:0%"></div></div></div>
+    <div id="ach-list"></div>
+  </div>
+</div>
+<div class="full-overlay" id="replay-overlay">
+  <div id="replay-box">
+    <div id="replay-header"><h2>&#127910; Replay</h2><button id="replay-close">&#10005;</button></div>
+    <div id="replay-body">
+      <div id="replay-empty">Nenhum replay salvo ainda.<br>Complete um n&#237;vel para ver!</div>
+      <div id="replay-content" style="display:none;flex-direction:column;gap:12px;">
+        <div id="replay-canvas-wrap"><canvas id="replay-canvas" width="260" height="220"></canvas></div>
+        <div id="replay-controls">
+          <button class="rp-btn rp-btn-play" id="rp-play-btn">&#9654; Play</button>
+          <div id="replay-progress"><div id="replay-fill"></div></div>
+          <button class="rp-btn rp-btn-stop" id="rp-stop-btn">&#9632; Parar</button>
+        </div>
+        <div id="replay-info"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="secret-flash">&#10024; Passagem Secreta! &#10024;</div>
+<div id="toast"></div>
+<div id="ach-popup"></div>
+<div id="gtost"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
