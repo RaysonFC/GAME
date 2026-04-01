@@ -305,16 +305,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#060a14;font-family:
 #install-yes{font-family:'Fredoka One',cursive;font-size:0.85rem;padding:9px 18px;border-radius:12px;border:none;background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;cursor:pointer;white-space:nowrap;flex-shrink:0;}
 #install-no{background:none;border:none;color:rgba(255,255,255,0.3);font-size:1.2rem;cursor:pointer;padding:4px;flex-shrink:0;}
 
-/* ═══════════════════════ SAVE INDICATOR ═══════════════════════ */
-#save-indicator{
-  position:fixed;top:54px;right:10px;z-index:49;
-  font-family:'Fredoka One',cursive;font-size:0.65rem;color:rgba(34,197,94,0.7);
-  display:flex;align-items:center;gap:3px;opacity:0;transition:opacity 0.5s;
-  pointer-events:none;
-}
-#save-indicator.show{opacity:1;}
-#save-indicator::before{content:'●';animation:saveBlink 1s ease infinite;}
-@keyframes saveBlink{0%,100%{opacity:1}50%{opacity:0.3}}
+/* save is now silent — no indicator */
 
 /* ═══════════════════════ IN-LEVEL POWER ITEM GLOW ═══════════════════════ */
 /* Radar e Lanterna coletáveis no labirinto têm cores distintas */
@@ -335,3 +326,15 @@ html,body{width:100%;height:100%;overflow:hidden;background:#060a14;font-family:
 #dpad-up{grid-area:u}#dpad-left{grid-area:l}#dpad-right{grid-area:r}#dpad-down{grid-area:d}
 #ctrl-zone.joystick-mode #dpad{display:none;}
 #ctrl-zone.dpad-mode #joystick-wrap{display:none;}
+
+/* ═══════════════════════ MENU INSTALL BUTTON ═══════════════════════ */
+.mbtn-install{
+  background:linear-gradient(135deg,rgba(168,85,247,0.25),rgba(124,58,237,0.25))!important;
+  border-color:rgba(168,85,247,0.6)!important;
+  color:#c084fc!important;
+  font-weight:700;
+}
+.mbtn-install:hover{
+  background:linear-gradient(135deg,#a855f7,#7c3aed)!important;
+  color:#fff!important;
+}

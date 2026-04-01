@@ -13,11 +13,9 @@ let deferredInstall = null;
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
   deferredInstall = e;
-  // Mostrar banner após 8s se não instalado
-  setTimeout(() => {
-    const b = document.getElementById('install-banner');
-    if (b) b.classList.add('show');
-  }, 8000);
+  // Mostrar botão de instalar no menu imediatamente
+  const installBtn = document.getElementById('menu-install-btn');
+  if (installBtn) installBtn.style.display = 'inline-flex';
 });
 document.getElementById('install-yes').addEventListener('click', () => {
   document.getElementById('install-banner').classList.remove('show');
@@ -26,8 +24,22 @@ document.getElementById('install-yes').addEventListener('click', () => {
 document.getElementById('install-no').addEventListener('click', () => {
   document.getElementById('install-banner').classList.remove('show');
 });
+// Menu install button
+const _menuInstBtn = document.getElementById('menu-install-btn');
+if (_menuInstBtn) {
+  _menuInstBtn.addEventListener('click', () => {
+    if (deferredInstall) { deferredInstall.prompt(); deferredInstall = null; _menuInstBtn.style.display='none'; }
+    else { showToast('Abra o menu do browser e toque em "Adicionar à tela inicial"'); }
+    // Close menu
+    menuOpen = false;
+    document.getElementById('top-menu').classList.remove('open');
+    document.getElementById('menu-btn').innerHTML = '&#9776;';
+  });
+}
 window.addEventListener('appinstalled', () => {
   document.getElementById('install-banner').classList.remove('show');
+  const _ib = document.getElementById('menu-install-btn');
+  if (_ib) _ib.style.display = 'none';
   showToast('✅ Jogo instalado! Jogue offline à vontade.');
 });
 
@@ -66,9 +78,7 @@ function saveGame() {
       ts: Date.now()
     };
     localStorage.setItem(SAVE_KEY, JSON.stringify(data));
-    // Flash indicator
-    const ind = document.getElementById('save-indicator');
-    if (ind) { ind.classList.add('show'); clearTimeout(ind._t); ind._t = setTimeout(() => ind.classList.remove('show'), 2000); }
+    // Save is silent — no indicator flash
   } catch (e) { console.warn('Save failed', e); }
 }
 
