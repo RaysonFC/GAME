@@ -13,9 +13,14 @@ let deferredInstall = null;
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
   deferredInstall = e;
-  // Mostrar botão de instalar no menu imediatamente
+  // Mostrar botão de instalar no menu
   const installBtn = document.getElementById('menu-install-btn');
   if (installBtn) installBtn.style.display = 'inline-flex';
+  // Mostrar banner de instalação após 3 segundos
+  setTimeout(() => {
+    const banner = document.getElementById('install-banner');
+    if (banner && deferredInstall) banner.classList.add('show');
+  }, 3000);
 });
 document.getElementById('install-yes').addEventListener('click', () => {
   document.getElementById('install-banner').classList.remove('show');
