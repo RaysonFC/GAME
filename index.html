@@ -16,9 +16,21 @@
 <link rel="stylesheet" href="estilos.css">
 </head>
 <body>
+
+<!-- ═══════ LOADING SCREEN ═══════ -->
+<div id="loading-screen">
+  <div id="loading-content">
+    <img id="loading-gif" src="labirinto-v1.gif" alt="Labirinto Mágico">
+    <div id="loading-title">Labirinto Mágico</div>
+    <div id="loading-bar-wrap"><div id="loading-bar"></div></div>
+    <div id="loading-tip"></div>
+  </div>
+</div>
+
 <canvas id="c"></canvas>
 <canvas id="minimap" width="92" height="78"></canvas>
 <div id="speed-bar"><div id="speed-fill"></div></div>
+<div id="xp-bar-wrap"><div id="xp-bar"></div><div id="xp-label">XP 0</div></div>
 
 <!-- HUD BAR -->
 <div id="hud-bar">
@@ -32,6 +44,7 @@
     <div class="hstat">&#128184;<span id="coins-val">0</span></div>
     <div class="hstat">&#128123;<div id="danger-bar-wrap"><div id="danger-bar"></div></div></div>
     <div id="stars-hud">&#11088;&#11088;&#11088;</div>
+    <div class="hstat" id="xp-hud" style="display:none">&#9889;XP<span id="xp-val">0</span></div>
   </div>
 </div>
 
@@ -42,6 +55,7 @@
     <button class="mbtn" id="ach-btn">&#127942; Conquistas</button>
     <button class="mbtn" id="ranking-btn">&#127941; Ranking</button>
     <button class="mbtn" id="config-btn">&#9881;&#65039; Config</button>
+    <button class="mbtn" id="shop-btn">&#127873; Loja</button>
     <button class="mbtn mbtn-install" id="menu-install-btn" style="display:none">&#128229; Instalar</button>
   </div>
 </div>
@@ -53,15 +67,23 @@
   <div class="pu-slot empty" id="pu-slot-2">&#9723;</div>
 </div>
 
-<!-- TORCH BUTTON (fog phases) -->
+<!-- TORCH BUTTON -->
 <button id="torch-btn" title="Usar Lanterna">&#128294;<div id="torch-count">0</div></button>
 
-<!-- RADAR HUD (shows monster direction) -->
+<!-- RADAR HUD -->
 <div id="radar-hud" title="Radar do Monstro">
   <span id="radar-arrow">&#8593;</span>
   <div id="radar-dist"></div>
 </div>
 
+<!-- BOSS HEALTH BAR -->
+<div id="boss-bar-wrap">
+  <div id="boss-bar-label">&#128480; CHEFE</div>
+  <div id="boss-bar-bg"><div id="boss-bar-fill"></div></div>
+</div>
+
+<!-- DAILY CHALLENGE BANNER -->
+<div id="daily-banner"></div>
 
 <!-- POWER-UP PICK OVERLAY -->
 <div id="powerup-pick-overlay">
@@ -69,6 +91,26 @@
   <div id="pp-subtitle">Complete mais fases para ganhar poderes mais fortes</div>
   <div id="pp-cards"></div>
   <button id="pp-skip">Pular por agora</button>
+</div>
+
+<!-- SHOP OVERLAY -->
+<div id="shop-overlay" class="full-overlay">
+  <div id="shop-box">
+    <div id="shop-header">
+      <h2>&#127873; Loja de Upgrades</h2>
+      <div id="shop-coins-display">&#128184;<span id="shop-coin-count">0</span></div>
+      <button id="shop-close">&#10005;</button>
+    </div>
+    <div id="shop-body"></div>
+  </div>
+</div>
+
+<!-- SKIN PICK OVERLAY -->
+<div id="skin-overlay" class="full-overlay">
+  <div id="skin-box">
+    <div id="skin-header"><h2>&#127804; Skins</h2><button id="skin-close">&#10005;</button></div>
+    <div id="skin-body"></div>
+  </div>
 </div>
 
 <!-- DIALOG -->
@@ -97,15 +139,27 @@
 </div>
 <div class="full-overlay" id="config-overlay">
   <div id="config-box">
-    <div id="config-header"><h2>&#9881;&#65039; Configura&#231;&#245;es</h2><button id="config-close">&#10005;</button></div>
+    <div id="config-header"><h2>&#9881;&#65039; Config</h2><button id="config-close">&#10005;</button></div>
     <div id="config-body">
-      <div class="cfg-section"><h3>&#127918; Tipo de Controle</h3>
+      <div class="cfg-section"><h3>&#127918; Controle</h3>
         <div class="ctrl-options">
           <div class="ctrl-opt selected" id="opt-joystick"><div class="ctrl-opt-icon">&#128377;&#65039;</div><div class="ctrl-opt-name">Joystick</div><div class="ctrl-opt-desc">Arraste o c&#237;rculo</div></div>
           <div class="ctrl-opt" id="opt-dpad"><div class="ctrl-opt-icon">&#11014;&#65039;</div><div class="ctrl-opt-name">Setas</div><div class="ctrl-opt-desc">4 bot&#245;es direcionais</div></div>
         </div>
       </div>
-      <button class="cfg-save" id="config-save">&#9989; Salvar e Fechar</button>
+      <div class="cfg-section">
+        <h3>&#127784;&#65039; N&#233;voa</h3>
+        <div class="fog-options">
+          <label class="fog-opt"><input type="radio" name="fog" value="light"> Leve</label>
+          <label class="fog-opt"><input type="radio" name="fog" value="normal" checked> Normal</label>
+          <label class="fog-opt"><input type="radio" name="fog" value="heavy"> Densa</label>
+        </div>
+      </div>
+      <div class="cfg-section">
+        <h3>&#128276; Sons</h3>
+        <label class="toggle-row"><span>Efeitos sonoros</span><input type="checkbox" id="cfg-sfx" checked></label>
+      </div>
+      <button class="cfg-save" id="config-save">&#9989; Salvar</button>
     </div>
   </div>
 </div>
@@ -113,9 +167,9 @@
   <div id="pause-box"><h2>&#9646;&#9646; Pausado</h2>
     <div class="pause-btn-row">
       <button class="p-btn p-btn-resume" id="btn-resume">&#9654; Continuar</button>
-      <button class="p-btn p-btn-ranking" id="btn-pause-ranking">&#127941; Ver Ranking</button>
+      <button class="p-btn p-btn-ranking" id="btn-pause-ranking">&#127941; Ranking</button>
       <button class="p-btn p-btn-replay" id="btn-pause-replay">&#127910; Replay</button>
-      <button class="p-btn p-btn-quit" id="btn-quit">&#127968; Voltar ao Menu</button>
+      <button class="p-btn p-btn-quit" id="btn-quit">&#127968; Menu</button>
     </div>
   </div>
 </div>
@@ -123,17 +177,17 @@
   <div id="ranking-box">
     <div id="ranking-header"><h2>&#127941; Ranking</h2><button id="ranking-close">&#10005;</button></div>
     <div id="ranking-body"></div>
-    <div id="ranking-footer"><div id="ranking-name-row"><input id="ranking-name-input" type="text" maxlength="16" placeholder="Seu nome para salvar pontuação..."/><button id="ranking-save-btn">&#128190; Salvar</button></div></div>
+    <div id="ranking-footer"><div id="ranking-name-row"><input id="ranking-name-input" type="text" maxlength="16" placeholder="Seu nome..."/><button id="ranking-save-btn">&#128190; Salvar</button></div></div>
   </div>
 </div>
 <div class="full-overlay" id="tutorial-overlay">
   <div id="tutorial-box">
     <div class="tut-step active" data-step="0"><div class="tut-icon">&#127752;</div><div class="tut-title">Bem-vindo!</div><div class="tut-desc">Voc&#234; controla a fada &#129274; e precisa escapar pelo labirinto antes que o fantasminha te pegue!</div></div>
-    <div class="tut-step" data-step="1"><div class="tut-icon">&#128273;</div><div class="tut-title">Colete as Chaves</div><div class="tut-desc">Colete todas as chaves &#128273; e moedas &#128184;. As moedas valem pontos b&#244;nus!</div></div>
-    <div class="tut-step" data-step="2"><div class="tut-icon">&#127881;</div><div class="tut-title">Power-ups no Labirinto</div><div class="tut-desc">Colete power-ups espalhados no labirinto. Na fase de N&#233;voa aparecem &#128294; Lanterna e &#128225; Radar!</div></div>
-    <div class="tut-step" data-step="3"><div class="tut-icon">&#128123;</div><div class="tut-title">Fuja do Fantasminha</div><div class="tut-desc">Voc&#234; tem 3 vidas &#10084;. O minimapa mostra onde ele est&#225;! O Radar avisa a dire&#231;&#227;o dele!</div></div>
-    <div class="tut-step" data-step="4"><div class="tut-icon">&#10024;</div><div class="tut-title">Passagens Secretas</div><div class="tut-desc">Paredes com setas brilhantes s&#227;o passagens secretas! Teleportam e d&#227;o b&#244;nus.</div></div>
-    <div class="tut-step" data-step="5"><div class="tut-icon">&#11088;</div><div class="tut-title">Salve seu Progresso</div><div class="tut-desc">Seu progresso &#233; salvo automaticamente! Voc&#234; pode instalar o jogo no celular para jogar offline.</div></div>
+    <div class="tut-step" data-step="1"><div class="tut-icon">&#128273;</div><div class="tut-title">Colete as Chaves</div><div class="tut-desc">Colete todas as chaves &#128273; e moedas &#128184;. As moedas valem pontos b&#244;nus e XP!</div></div>
+    <div class="tut-step" data-step="2"><div class="tut-icon">&#127881;</div><div class="tut-title">Power-ups no Labirinto</div><div class="tut-desc">Colete power-ups espalhados! Na fase de N&#233;voa aparecem &#128294; Lanterna e &#128225; Radar!</div></div>
+    <div class="tut-step" data-step="3"><div class="tut-icon">&#128123;</div><div class="tut-title">Fuja dos Inimigos</div><div class="tut-desc">Fantasmas, caranguejos e chefes te perseguem. Use o Radar para saber a dire&#231;&#227;o deles!</div></div>
+    <div class="tut-step" data-step="4"><div class="tut-icon">&#9889;</div><div class="tut-title">XP &amp; Loja</div><div class="tut-desc">Ganhe XP jogando! Acumule moedas &#128184; e compre upgrades na loja &#127873; para ficar mais forte.</div></div>
+    <div class="tut-step" data-step="5"><div class="tut-icon">&#11088;</div><div class="tut-title">Desafio Di&#225;rio</div><div class="tut-desc">A cada dia h&#225; um desafio especial com recompensas b&#244;nus. Complete para ganhar moedas extra!</div></div>
     <div class="tut-nav">
       <button class="tut-btn tut-btn-skip" id="tut-skip">Pular</button>
       <div class="tut-dots" id="tut-dots"></div>
@@ -152,7 +206,7 @@
   <div id="replay-box">
     <div id="replay-header"><h2>&#127910; Replay</h2><button id="replay-close">&#10005;</button></div>
     <div id="replay-body">
-      <div id="replay-empty">Nenhum replay salvo ainda.<br>Complete um n&#237;vel para ver!</div>
+      <div id="replay-empty">Nenhum replay ainda.<br>Complete um n&#237;vel para ver!</div>
       <div id="replay-content" style="display:none;flex-direction:column;gap:12px;">
         <div id="replay-canvas-wrap"><canvas id="replay-canvas" width="260" height="220"></canvas></div>
         <div id="replay-controls">

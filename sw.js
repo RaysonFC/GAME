@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════
 // SERVICE WORKER — Labirinto Mágico PWA
 // ═══════════════════════════════════════
-const CACHE = 'labirinto-v1';
+const CACHE = 'labirinto-v1.gif';
 const ASSETS = [
   './',
   './index.html',
