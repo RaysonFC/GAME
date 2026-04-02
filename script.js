@@ -783,7 +783,7 @@ function draw(){
     const fg=ctx.createRadialGradient(fx,fy,fr*.35,fx,fy,fr*1.5);
     fg.addColorStop(0,'rgba(0,0,0,0)');
     fg.addColorStop(torchActive?.65:.5,'rgba(0,0,0,0.55)');
-    fg.addColorStop(1,'rgba(0,0,0,0.97)');
+    fg.addColorStop(1,'rgba(0,0,0,0.55)');
     ctx.fillStyle=fg;ctx.fillRect(0,0,W_PX,H_PX);
   }
 
