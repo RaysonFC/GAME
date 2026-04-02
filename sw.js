@@ -1,13 +1,15 @@
 // ═══════════════════════════════════════
 // SERVICE WORKER — Labirinto Mágico PWA
 // ═══════════════════════════════════════
-const CACHE = 'labirinto-v1.gif';
+const CACHE = 'labirinto-v3';
 const ASSETS = [
   './',
   './index.html',
   './estilos.css',
   './script.js',
   './manifest.json',
+  './labirinto-v1.gif',
+  './fantasma.png',
   'https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;800&display=swap'
 ];
 

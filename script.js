@@ -972,7 +972,6 @@ function openAchievements(){renderAchievements();document.getElementById('achiev
 function closeAchievements(){document.getElementById('achievements-overlay').classList.remove('show');}
 document.getElementById('ach-btn').addEventListener('click',openAchievements);
 document.getElementById('ach-close').addEventListener('click',closeAchievements);
-loadAch();
 
 // ═══════════════════════════════════════════════════════════
 // REPLAY
@@ -1063,7 +1062,6 @@ document.getElementById('menu-btn').addEventListener('click',()=>{
 // START BUTTON
 // ═══════════════════════════════════════════════════════════
 document.getElementById('ov-btn').addEventListener('click',function(){
-  if(document.getElementById('ov-btn').onclick) return;
   document.getElementById('game-overlay').classList.remove('show');
   if(gameState==='dead'){const sv=level,ss=score;initLevel();level=sv;score=ss;document.getElementById('lvl-val').textContent=level;document.getElementById('score-val').textContent=score;}
   else initLevel();
@@ -1073,8 +1071,7 @@ document.getElementById('ov-btn').addEventListener('click',function(){
 // INIT
 // ═══════════════════════════════════════════════════════════
 loadCfg();loadAch();
-let xp=0,shopUpgrades={},unlockedSkins=['fairy'],activeSkin='fairy',permanentCoins=0;
-const hasSave=loadGame();
+const hasSave=loadGame(); // vars already declared above
 
 applyScene(1);genMaze();gameState='intro';
 
